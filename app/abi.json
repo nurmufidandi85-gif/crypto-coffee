@@ -1,0 +1,138 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_nama",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_pesan",
+				"type": "string"
+			}
+		],
+		"name": "beliKopi",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "dari",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "waktu",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "nama",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "pesan",
+				"type": "string"
+			}
+		],
+		"name": "MemoBaru",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "ambilSemuaMemo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "dari",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "waktu",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "nama",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "pesan",
+						"type": "string"
+					}
+				],
+				"internalType": "struct CryptoCoffee.Memo[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "daftarMemo",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "dari",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "waktu",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "nama",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "pesan",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "pemilik",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
