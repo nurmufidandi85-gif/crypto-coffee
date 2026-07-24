@@ -13,9 +13,10 @@ export default function Home() {
 
   async function klikBeliKopi() {
     try {
-      if (!window.ethereum) return alert("Silakan instal dompet MetaMask terlebih dahulu!");
+      // 🚀 BYPASS 1: Menggunakan (window as any) agar lolos sensor TypeScript Vercel
+      if (!(window as any).ethereum) return alert("Silakan instal dompet MetaMask terlebih dahulu!");
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
       const kontrakKopi = new ethers.Contract(alamatKontrak, abiDariRemix, signer);
       
@@ -25,7 +26,7 @@ export default function Home() {
       
       alert("Transaksi dikirim! Menunggu konfirmasi blockchain...");
       await transaksi.wait(); 
-      alert("Terima kasih! Donasi kopi berhasil masuk dompet Anda!");
+      alert("Teria kasih! Donasi kopi berhasil masuk dompet Anda!");
       
       setNama("");
       setPesan("");
@@ -37,25 +38,22 @@ export default function Home() {
   }
 
   async function muatDaftarMemo() {
-      async function muatDaftarMemo() {
     try {
-      if (!window.ethereum) return;
+      // 🚀 BYPASS 2: Menggunakan (window as any) di fungsi muat memo
+      if (!(window as any).ethereum) return;
       
-      // 🔓 MEMAKSA KONEKSI AKSES: Meminta izin dompet aktif sejak awal
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await window.ethereum.request({ method: "eth_requestAccounts" }); 
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      await (window as any).ethereum.request({ method: "eth_requestAccounts" }); 
       
       const kontrakKopi = new ethers.Contract(alamatKontrak, abiDariRemix, provider);
       
       const hasilMemo = await kontrakKopi.ambilSemuaMemo();
       setDaftarMemo(hasilMemo);
-      setStatusDompet("MetaMask Terhubung"); // Mengubah status menjadi hijau terhubung
+      setStatusDompet("MetaMask Terhubung"); 
     } catch (eror) {
       console.error(eror);
       setStatusDompet("Belum Terhubung");
     }
-  }
-
   }
 
   useEffect(() => {
