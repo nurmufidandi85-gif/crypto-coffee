@@ -4,16 +4,35 @@ import { ethers } from "ethers";
 import abiDariRemix from "./abi.json"; 
 
 export default function Home() {
-  // GANTI teks di bawah ini dengan alamat kontrak dari Remix kemarin (0x...)
   const [alamatKontrak, setAlamatKontrak] = useState("0x7b96aF9Bd211cBf6BA5b0dd53aa61Dc5806b6AcE");
   const [nama, setNama] = useState("");
   const [pesan, setPesan] = useState("");
   const [daftarMemo, setDaftarMemo] = useState<any[]>([]);
   const [statusDompet, setStatusDompet] = useState("Belum Terhubung");
 
+  // 🔌 TOMBOL SAKTI: Memaksa MetaMask melompat keluar secara instan saat diklik
+  async function hubungkanDompetManual() {
+    try {
+      if (typeof window !== "undefined" && (window as any).ethereum) {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        await (window as any).ethereum.request({ method: "eth_requestAccounts" });
+        
+        const kontrakKopi = new ethers.Contract(alamatKontrak, abiDariRemix, provider);
+        const hasilMemo = await kontrakKopi.ambilSemuaMemo();
+        setDaftarMemo(hasilMemo);
+        setStatusDompet("MetaMask Terhubung");
+        alert("Dompet Anda berhasil terhubung ke jaringan Sepolia!");
+      } else {
+        alert("Silakan pasang ekstensi MetaMask di browser Anda!");
+      }
+    } catch (eror) {
+      console.error(eror);
+      alert("Gagal menghubungkan dompet.");
+    }
+  }
+
   async function klikBeliKopi() {
     try {
-      // 🚀 BYPASS 1: Menggunakan (window as any) agar lolos sensor TypeScript Vercel
       if (!(window as any).ethereum) return alert("Silakan instal dompet MetaMask terlebih dahulu!");
       
       const provider = new ethers.BrowserProvider((window as any).ethereum);
@@ -26,43 +45,36 @@ export default function Home() {
       
       alert("Transaksi dikirim! Menunggu konfirmasi blockchain...");
       await transaksi.wait(); 
-      alert("Teria kasih! Donasi kopi berhasil masuk dompet Anda!");
+      alert("Terima kasih! Donasi kopi berhasil masuk dompet Anda!");
       
       setNama("");
       setPesan("");
-      muatDaftarMemo(); 
+      hubungkanDompetManual(); 
     } catch (eror) {
       console.error(eror);
       alert("Transaksi dibatalkan atau terjadi gangguan jaringan!");
     }
   }
 
-  async function muatDaftarMemo() {
-    try {
-      // 🚀 BYPASS 2: Menggunakan (window as any) di fungsi muat memo
-      if (!(window as any).ethereum) return;
-      
-      const provider = new ethers.BrowserProvider((window as any).ethereum);
-      await (window as any).ethereum.request({ method: "eth_requestAccounts" }); 
-      
-      const kontrakKopi = new ethers.Contract(alamatKontrak, abiDariRemix, provider);
-      
-      const hasilMemo = await kontrakKopi.ambilSemuaMemo();
-      setDaftarMemo(hasilMemo);
-      setStatusDompet("MetaMask Terhubung"); 
-    } catch (eror) {
-      console.error(eror);
-      setStatusDompet("Belum Terhubung");
-    }
-  }
-
   useEffect(() => {
-    muatDaftarMemo();
+    if (typeof window !== "undefined" && (window as any).ethereum) {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const kontrakKopi = new ethers.Contract(alamatKontrak, abiDariRemix, provider);
+      kontrakKopi.ambilSemuaMemo().then((hasil) => setDaftarMemo(hasil)).catch((e) => console.error(e));
+    }
   }, [alamatKontrak]);
 
   return (
     <div style={{ padding: "40px", fontFamily: "sans-serif", maxWidth: "600px", margin: "0 auto", color: "#333", backgroundColor: "#fff", minHeight: "100vh" }}>
-      <h1 style={{ color: "#8B4513", marginTop: "0" }}>☕ Crypto Coffee</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <h1 style={{ color: "#8B4513", margin: 0 }}>☕ Crypto Coffee</h1>
+        
+        {/* Tombol Interaktif Baru */}
+        <button onClick={hubungkanDompetManual} style={{ backgroundColor: statusDompet === "MetaMask Terhubung" ? "#2e7d32" : "#d32f2f", color: "white", padding: "10px 15px", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}>
+          {statusDompet === "MetaMask Terhubung" ? "🟢 Terhubung" : "🔌 Hubungkan Wallet"}
+        </button>
+      </div>
+      
       <p style={{ color: "#555" }}>Status Koneksi: <b style={{ color: statusDompet === "MetaMask Terhubung" ? "green" : "red" }}>{statusDompet}</b></p>
       
       <div style={{ marginBottom: "20px", background: "#f0f0f0", padding: "15px", borderRadius: "5px" }}>
